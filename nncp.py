@@ -1,6 +1,9 @@
-import ast
-import tokenize
+import ast, tokenize, csv
 
+# get hard list linear operations from file
+hardList_linearOps = list(csv.reader(open('linear_op_list.csv','r'), delimiter=','))
+
+print (hardList_linearOps)
 # dictionary to save all linear ops by annotated str
 linear_ops = {}
 blank_lines = []
