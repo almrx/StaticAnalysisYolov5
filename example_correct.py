@@ -16,9 +16,7 @@ output = np.dot(a,b)
 
 c = 7
 
-output1=np.dot(b,c)
-
-#nncp array
+#nncp np array
 
 val1=np.array([[1, 2], [3, 4]])
 
