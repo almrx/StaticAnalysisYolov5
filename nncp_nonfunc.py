@@ -1,27 +1,30 @@
 import ast, tokenize, csv, sys
 
 # get hard list linear operations from file
-hardList_linearOps = list(csv.reader(open('linear_op_list.csv','r'), delimiter=','))[0]
+#hardList_linearOps = list(csv.reader(open('linear_op_list.csv','r'), delimiter=','))[0]
 
+#print (hardList_linearOps)
 # dictionary to save all linear ops by annotated str
-linear_ops = {}         # save linear operations existed on the annotation comments
-blank_lines = []        # 
+linear_ops = {}
+blank_lines = []
 
 #print(str(sys.argv[1]))
 
+'''
 spec = open(str(sys.argv[1]), 'r')
 spec_lines = spec.readlines()
 spec_lines = [x.replace('\n', '').replace(' ', '') for x in spec_lines]
 #print(spec_lines)
+'''
 
 # read file && test tokenize
-with open(str(sys.argv[2]), 'r', encoding='utf8') as f: 
+with open(str(sys.argv[1]), 'r', encoding='utf8') as f: 
     src = f.read()
-    
+'''
 flag=True
 c=0
 
-with tokenize.open(str(sys.argv[2])) as f:
+with tokenize.open(str(sys.argv[1])) as f:
     token_src = tokenize.generate_tokens(f.readline)
     for token in token_src:
         #print(token)
@@ -40,41 +43,17 @@ with tokenize.open(str(sys.argv[2])) as f:
         flag=True
 
 print(blank_lines)
-
+'''
 #print (type(src), src)
 #print (type(token_src))
 
-## Evaluate Assigment expression
+## test ast 
 class GetAssignments(ast.NodeVisitor):
     def visit_Assign(self, node):
         if isinstance(node.value, ast.Constant):
             return
-        if isinstance(node.value, ast.Subscript) or isinstance(node.value, ast.BinOp):
-            c=1
-            while (node.lineno-c) in blank_lines:
-                c+=1
-                if c>=6:
-                    print("match not found: ",ast.dump(node.value)," on line ",node.lineno," more than 5 blank lines")
-                    return
-            if (node.lineno-c) in linear_ops.keys():
-                if isinstance(node.value, ast.Subscript) and linear_ops[node.lineno-c]=="projection":
-                    print("match: projection on line ",node.lineno," ",ast.dump(node.value),'\n')
-                    return
-                if isinstance(node.value, ast.BinOp):
-                    if isinstance(node.value.op, ast.Add) and linear_ops[node.lineno-c]=="add":
-                        print("match: add on line ",node.lineno," ",ast.dump(node.value),'\n')
-                        return
-                    if isinstance(node.value.op, ast.Sub) and linear_ops[node.lineno-c]=="sub":
-                        print("match: sub on line ",node.lineno," ",ast.dump(node.value),'\n')
-                        return
-                    if isinstance(node.value.op, ast.Mult) and linear_ops[node.lineno-c]=="mult":
-                        print("match: mult on line ",node.lineno," ",ast.dump(node.value),'\n')
-                        return
-                    if isinstance(node.value.op, ast.MatMult) and linear_ops[node.lineno-c]=="matmult":
-                        print("match: matmult on line ",node.lineno," ",ast.dump(node.value),'\n')
-                        return
-                print("match not found: ",ast.dump(node.value)," on line ",node.lineno)
-                return
+        print(ast.dump(node.value))
+        '''
         if hasattr(node.value.func.value, "attr"):
             #print(node.value.func.value.value.id," ",node.value.func.value.attr," ",node.value.func.attr)
             if node.value.func.value.value.id not in hardList_linearOps or node.value.func.value.attr not in hardList_linearOps or node.value.func.attr not in hardList_linearOps:
@@ -83,8 +62,6 @@ class GetAssignments(ast.NodeVisitor):
             #print(node.value.func.value.id," ",node.value.func.attr)
             if node.value.func.value.id not in hardList_linearOps or node.value.func.attr not in hardList_linearOps:
                 return
-
-        # 
         c=1
         while (node.lineno-c) in blank_lines:
             c+=1
@@ -113,6 +90,7 @@ class GetAssignments(ast.NodeVisitor):
                 print('match: ',node.value.func.attr," on line ",node.lineno," ",ast.dump(node.value),'\n')
         else:
             print("match not found: ",ast.dump(node.value)," on line ",node.lineno," annotation not found")
+        '''
             
 
 
@@ -136,13 +114,14 @@ tree = ast.parse(src, mode='exec')
 #print ("\n ---- AST TREE STARTED -----\n")
 #ConstantVisitor().visit(tree)
 #print (type (tree) , tree, tree.lineno)
-print (linear_ops)
+#print (linear_ops)
 
 GetAssignments().visit(tree)
 
 #print ("\n ---- AST TREE END-----\n")
 
 #print (ast.dump(tree))
+
 '''
 Module(
     body=[

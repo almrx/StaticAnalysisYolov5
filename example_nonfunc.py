@@ -11,9 +11,11 @@ import torch
 #nncp np array
 val1=np.array([[1, 2], [3, 4]])
 
+#nncp projection
 val2=val1[:, 2]
 
 #nncp np array
 val3=np.array([[5, 6], [-2, 4]])
 
+#nncp mult
 val4=val1*val3
