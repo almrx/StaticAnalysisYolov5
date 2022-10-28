@@ -1,0 +1,14 @@
+np dot
+np array
+np array
+torch nn interpolate
+-------
+np.array:notnull:val1
+np.dot:a b:val2
+torch.nn.interpolate:arg1,arg2:out 
+
+--
+
+
+np.dot:
+np.load()
