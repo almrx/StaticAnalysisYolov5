@@ -8,14 +8,18 @@ This file services as an example of liner operation
 import numpy as np
 import torch
 
-#nncp np array
-val1=np.array([[1, 2], [3, 4]])
+def fitness():
+    return 1
 
-#nncp projection
-val2=val1[:, 2]
+a = 3 
+b = 4
 
-#nncp np array
-val3=np.array([[5, 6], [-2, 4]])
+#nncp np dot
+output = np.dot(a,b)
 
-#nncp mult
-val4=val1+val3
+c = 7
+
+#nncp fitness
+val2=fitness()
+
+print(output)

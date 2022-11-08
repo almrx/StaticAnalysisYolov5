@@ -1,4 +1,3 @@
 np dot
-np array
-np array
+array
 torch nn interpolate
