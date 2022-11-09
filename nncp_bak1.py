@@ -75,10 +75,7 @@ class GetAssignments(ast.NodeVisitor):
                         return
                 print("match not found: expected: ",linear_ops[node.lineno-c], " found: ",ast.dump(node.value.op)," on line ",node.lineno)
                 return
-        print(ast.dump(node.value))
-        if not hasattr(node.value.func, "attr"):
-            pass
-        elif hasattr(node.value.func.value, "attr"):
+        if hasattr(node.value.func.value, "attr"):
             #print(node.value.func.value.value.id," ",node.value.func.value.attr," ",node.value.func.attr)
             if node.value.func.value.value.id not in hardList_linearOps or node.value.func.value.attr not in hardList_linearOps or node.value.func.attr not in hardList_linearOps:
                 return
@@ -95,12 +92,7 @@ class GetAssignments(ast.NodeVisitor):
                 print("match not found: ",ast.dump(node.value)," on line ",node.lineno," more than 5 blank lines")
                 return
         if (node.lineno-c) in linear_ops.keys():
-            if not hasattr(node.value.func, "attr"):
-                if node.value.func.id not in linear_ops[node.lineno-c]:
-                    print("match not found: ",ast.dump(node.value)," on line ",node.lineno," couldn't find ",node.value.func.id," in annotation",linear_ops[node.lineno-c])
-                    return
-                print('match: user defined function: ',node.value.func.id," on line ",node.lineno," ",ast.dump(node.value),'\n')
-            elif hasattr(node.value.func.value, "attr"):
+            if hasattr(node.value.func.value, "attr"):
                 if node.value.func.value.value.id not in linear_ops[node.lineno-c]:
                     print("match not found: ",ast.dump(node.value)," on line ",node.lineno," couldn't find ",node.value.func.value.value.id," in annotation",linear_ops[node.lineno-c])
                     return

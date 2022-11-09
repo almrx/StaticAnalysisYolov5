@@ -1,0 +1,25 @@
+Spec:
+
+b=np.array(...)
+c=np.dot(a, b)
+
+Code:
+
+#nncp
+c=np.dot(a, np.array(...))
+
+-------
+
+Spec:
+
+#check A B C
+A = np.dot(np.array(1), np.array(2))
+
+Code:
+
+#check B
+B=np.array(1)
+C=np.array(2)
+
+#check A
+A = np.dot(B, C)
