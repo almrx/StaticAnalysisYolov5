@@ -72,9 +72,8 @@ def packFunc(node):
         return packFunc(node.value)
 
 def handleConstName(elem, treedic):
-    #print(ast.dump(elem))
     if isinstance(elem, ast.Constant):
-        return str(elem.value)
+        return elem.value
     elif isinstance(elem, ast.Name):
         if elem.id in treedic:
             return treedic[elem.id]
@@ -86,36 +85,17 @@ def handleConstName(elem, treedic):
 
 def SliceStr(slice, treedic):
     tmpstr='['
+    sliceflag=True
 
-    if isinstance(slice, ast.Index):
-        dims=slice.value.elts
-    elif isinstance(slice, ast.ExtSlice):
-        dims=slice.dims
-    else:
-        print("Slice is an unrecognized object: ", slice)
-    
-    #print(dims)
-
-    for i in dims:
+    for i in slice.dims:
         if isinstance(i, ast.Slice):
-            tmpval=handleConstName(i.lower, treedic)
-            if not tmpval==False:
-                tmpstr+=tmpval
-            tmpstr+=':'
-            tmpval=handleConstName(i.upper, treedic)
-            if not tmpval==False:
-                tmpstr+=tmpval
-            tmpval=handleConstName(i.step, treedic)
-            if not tmpval==False:
-                tmpstr+=':'+tmpval
-        elif isinstance(slice, ast.Index):
-            #print(ast.dump(i))
-            tmpstr+=handleConstName(i, treedic)
+            tmpstr+=handleConstName(i.lower, treedic)+':'+handleConstName(i.upper, treedic)
         else:
-            print("Element of slice is an unrecognized object: ", i)
+            tmpstr+=handleConstName(i, treedic)
         
-        if not i == dims[-1]:
+        if sliceflag:
             tmpstr+=','
+            sliceflag=False
 
     tmpstr+=']'
     return tmpstr
@@ -145,7 +125,7 @@ def addArgs(somenode, sometreedic, args):
         elif isinstance(i, ast.Subscript):
             nodeobj=Node('Project', [])
             nodeobj.args.append(i.value.id)
-            nodeobj.args.append(SliceStr(i.slice, sometreedic))
+            nodeobj.args.append(SliceStr(i.value.slice, sometreedic))
             somenode.args.append(nodeobj)
         elif isinstance(i, ast.BinOp):
             if isinstance(i.op, ast.Add):
@@ -193,10 +173,11 @@ class GetAssignments(ast.NodeVisitor):
             packFunc(node.value.func)
             root.func=funcName
             addArgs(root, treedic, node.value.args)
+            treedic[node.targets[0].id]=root
         elif isinstance(node.value, ast.Subscript):
             root.func='Project'
             root.args.append(node.value.value.id)
-            root.args.append(SliceStr(node.value.slice, treedic))
+            root.args.append(SliceStr(node.value.value.slice, treedic))
         elif isinstance(node.value, ast.BinOp):
             if isinstance(node.value.op, ast.Add):
                 root.func='Add'
@@ -212,8 +193,6 @@ class GetAssignments(ast.NodeVisitor):
             addArgs(root, treedic, args)
         else:
             print("Unrecognized node: ", node.value)
-    
-        treedic[node.targets[0].id]=root
 
 #execute
 # parse the specification file and build the spec_treeDict 

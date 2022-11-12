@@ -72,7 +72,6 @@ def packFunc(node):
         return packFunc(node.value)
 
 def handleConstName(elem, treedic):
-    #print(ast.dump(elem))
     if isinstance(elem, ast.Constant):
         return str(elem.value)
     elif isinstance(elem, ast.Name):
@@ -92,9 +91,7 @@ def SliceStr(slice, treedic):
     elif isinstance(slice, ast.ExtSlice):
         dims=slice.dims
     else:
-        print("Slice is an unrecognized object: ", slice)
-    
-    #print(dims)
+        print("Unrecognized object: ", slice)
 
     for i in dims:
         if isinstance(i, ast.Slice):
@@ -108,11 +105,10 @@ def SliceStr(slice, treedic):
             tmpval=handleConstName(i.step, treedic)
             if not tmpval==False:
                 tmpstr+=':'+tmpval
-        elif isinstance(slice, ast.Index):
-            #print(ast.dump(i))
-            tmpstr+=handleConstName(i, treedic)
+        elif isinstance(i, ast.Index):
+            tmpstr+=handleConstName(i.value, treedic)
         else:
-            print("Element of slice is an unrecognized object: ", i)
+            print("Unrecognized object: ", i)
         
         if not i == dims[-1]:
             tmpstr+=','

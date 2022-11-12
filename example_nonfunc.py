@@ -12,7 +12,7 @@ import torch
 val1=np.array([[1, 2], [3, 4]])
 
 #nncp projection
-val2=val1[:, 2]
+val2=val1[0, 0]
 
 #nncp np array
 val3=np.array([[5, 6], [-2, 4]])

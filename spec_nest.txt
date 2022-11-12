@@ -1,0 +1,3 @@
+#check A
+B = np.array(1)
+A = np.dot(B, np.array(2))
